@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "urns",
+  "version": "${version}",
+
+  "name": "Urns",
+  "description": "Adds the clay urn to the game, a fragile container that is affected by gravity.",
+  "authors": [
+    "Bernardozomer"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/urns",
+    "sources": "https://github.com/Bernardozomer/urns-mod"
+  },
+
+  "license": "gpl-3.0",
+  "icon": "assets/urns/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.bernardozomer.urns.Urns"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  }
+}
