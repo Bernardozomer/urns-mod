@@ -68,6 +68,13 @@ public class ClayUrn extends FallingBlock implements BlockEntityProvider {
     }
 
     /**
+     * @return Whether the block is cracked or not.
+     */
+    public static BooleanProperty getIsCracked() {
+        return IS_CRACKED;
+    }
+
+    /**
      * @return The minimum height for the block to crack.
      */
     public static int getMinCrackingHeight() {
@@ -186,13 +193,15 @@ public class ClayUrn extends FallingBlock implements BlockEntityProvider {
     @Override
     public void onLanding(World world, BlockPos pos, BlockState fallingBlockState,
                           BlockState currentStateInPos, FallingBlockEntity fallingBlockEntity) {
-        if (!(fallingBlockEntity instanceof ClayUrnFallingBlockEntity fallingClayUrn)) {
+        if (!(fallingBlockEntity instanceof ClayUrnFallingBlockEntity)) {
             return;
         }
 
+        ClayUrnFallingBlockEntity fallingClayUrn = (ClayUrnFallingBlockEntity) fallingBlockEntity;
+
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof ClayUrnBlockEntity clayUrnBlockEntity) {
-            (clayUrnBlockEntity).setItems(fallingClayUrn.getItems());
+        if (blockEntity instanceof ClayUrnBlockEntity) {
+            ((ClayUrnBlockEntity) blockEntity).setItems(fallingClayUrn.getItems());
         }
 
         if (fallingClayUrn.getOriginY() - pos.getY() >= minCrackingHeight) {
@@ -218,8 +227,8 @@ public class ClayUrn extends FallingBlock implements BlockEntityProvider {
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new ClayUrnBlockEntity(pos, state);
+    public BlockEntity createBlockEntity(BlockView view) {
+        return new ClayUrnBlockEntity();
     }
 
     @Override
@@ -256,7 +265,7 @@ public class ClayUrn extends FallingBlock implements BlockEntityProvider {
 
     @Override
     protected void configureFallingBlockEntity(FallingBlockEntity entity) {
-        entity.setHurtEntities(2.0f, 40);
+        entity.setHurtEntities(true);
     }
 
     /**

@@ -8,10 +8,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
 
 /**
  * The block entity that is provided by the Clay Urn block.
@@ -21,8 +20,8 @@ public class ClayUrnBlockEntity extends BlockEntity implements ImplementedInvent
     private DefaultedList<ItemStack> items;
     private static final int INVENTORY_SIZE = 1;
 
-    public ClayUrnBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.CLAY_URN_BLOCK_ENTITY, pos, state);
+    public ClayUrnBlockEntity() {
+        super(ModBlockEntities.CLAY_URN_BLOCK_ENTITY);
         items = DefaultedList.ofSize(INVENTORY_SIZE, ItemStack.EMPTY);
     }
 
@@ -69,14 +68,14 @@ public class ClayUrnBlockEntity extends BlockEntity implements ImplementedInvent
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
-        super.readNbt(tag);
-        Inventories.readNbt(tag, items);
+    public void fromTag(BlockState state, CompoundTag tag) {
+        super.fromTag(state, tag);
+        Inventories.fromTag(tag, items);
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
-        Inventories.writeNbt(tag, items);
-        return super.writeNbt(tag);
+    public CompoundTag toTag(CompoundTag tag) {
+        Inventories.toTag(tag, items);
+        return super.toTag(tag);
     }
 }
