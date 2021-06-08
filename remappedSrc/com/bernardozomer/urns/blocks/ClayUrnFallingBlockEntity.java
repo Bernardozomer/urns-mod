@@ -7,7 +7,7 @@ import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
@@ -42,15 +42,15 @@ public class ClayUrnFallingBlockEntity extends FallingBlockEntity implements Imp
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound compoundTag) {
-        super.writeNbt(compoundTag);
+    public CompoundTag toTag(CompoundTag compoundTag) {
+        super.toTag(compoundTag);
         compoundTag.putDouble("originY", originY);
         return compoundTag;
     }
 
     @Override
-    public void readNbt(NbtCompound compoundTag) {
-        super.readNbt(compoundTag);
+    public void fromTag(CompoundTag compoundTag) {
+        super.fromTag(compoundTag);
         originY = compoundTag.getInt("originY");
     }
 
