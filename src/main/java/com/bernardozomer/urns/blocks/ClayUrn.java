@@ -12,8 +12,6 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
@@ -30,11 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-/**
- * The clay urn block, a fragile container that is affected by gravity.
- */
-public class ClayUrn extends FallingBlock implements BlockEntityProvider {
-
+public abstract class ClayUrn extends FallingBlock implements BlockEntityProvider {
     private static final BlockSoundGroup BLOCK_SOUND_GROUP = new BlockSoundGroup(
             1f, 1f,
             SoundEvents.BLOCK_GLASS_BREAK,
@@ -44,65 +38,45 @@ public class ClayUrn extends FallingBlock implements BlockEntityProvider {
             SoundEvents.BLOCK_BONE_BLOCK_FALL
     );
     private static final SoundEvent CRACK_SOUND = SoundEvents.BLOCK_NETHER_BRICKS_BREAK;
-    private static final BooleanProperty IS_CRACKED = BooleanProperty.of("is_cracked");
-    // Minimum height for the urn to crack.
-    private static final int minCrackingHeight = 3; // in blocks.
-    // Array of blocks that, when landed on, will prevent the urn from cracking.
-    private static final Block[] preventCracking = new Block[] {
+    private static final int MIN_CRACKING_HEIGHT = 3; // in blocks.
+    private static final Block[] PREVENT_CRACKING = new Block[] {
             Blocks.HAY_BLOCK,
-            Blocks.SLIME_BLOCK,
+            Blocks.SLIME_BLOCK
     };
     private final VoxelShape SHAPE;
 
     public ClayUrn(Settings settings) {
         super(settings);
-        SHAPE = this.generateShape();
-        setDefaultState(getStateManager().getDefaultState().with(IS_CRACKED, false));
+        this.SHAPE = this.generateShape();
     }
 
     /**
      * @return The block sound group.
      */
     public static BlockSoundGroup getBlockSoundGroup() {
-        return BLOCK_SOUND_GROUP;
+        return ClayUrn.BLOCK_SOUND_GROUP;
     }
 
     /**
      * @return The minimum height for the block to crack.
      */
     public static int getMinCrackingHeight() {
-        return minCrackingHeight;
+        return ClayUrn.MIN_CRACKING_HEIGHT;
     }
 
     /**
      * @return An array of every block that prevents cracking when landed on.
      */
     public static Block[] getPreventCracking() {
-        return preventCracking;
+        return ClayUrn.PREVENT_CRACKING;
     }
 
     /**
-     * If the block hasn't been cracked, then that will be done.
-     * Otherwise, breaks the block.
+     * Handles cracking.
      * @param world      The world the block is in.
      * @param pos        The block position.
-     * @param blockState The current block state.
      */
-    public void crack(World world, BlockPos pos, BlockState blockState) {
-        if (blockState.get(IS_CRACKED)) {
-            world.breakBlock(pos, true);
-        } else {
-            world.setBlockState(pos, blockState.with(IS_CRACKED, true));
-            world.playSound(
-                    null,
-                    pos,
-                    getCrackSound(),
-                    SoundCategory.BLOCKS,
-                    1f,
-                    1f
-            );
-        }
-    }
+    public abstract void crack(World world, BlockPos pos);
 
     /**
      * Attempts to transfer exactly one item from the player's hand stack to the block's inventory
@@ -133,7 +107,7 @@ public class ClayUrn extends FallingBlock implements BlockEntityProvider {
                     world.playSound(
                             null,
                             pos,
-                            BLOCK_SOUND_GROUP.getPlaceSound(),
+                            ClayUrn.getBlockSoundGroup().getPlaceSound(),
                             SoundCategory.BLOCKS,
                             1f,
                             1f
@@ -195,12 +169,9 @@ public class ClayUrn extends FallingBlock implements BlockEntityProvider {
             (clayUrnBlockEntity).setItems(fallingClayUrn.getItems());
         }
 
-        if (fallingClayUrn.getOriginY() - pos.getY() >= minCrackingHeight) {
-            BlockState blockState = world.getBlockState(pos);
-
-            if (!Arrays.asList(preventCracking).contains(world.getBlockState(pos.down()).getBlock())) {
-                crack(world, pos, blockState);
-            }
+        if (fallingClayUrn.getOriginY() - pos.getY() >= ClayUrn.getMinCrackingHeight()
+                && !Arrays.asList(ClayUrn.getPreventCracking()).contains(world.getBlockState(pos.down()).getBlock())) {
+            crack(world, pos);
         }
 
         world.updateComparators(pos, this);
@@ -220,6 +191,11 @@ public class ClayUrn extends FallingBlock implements BlockEntityProvider {
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new ClayUrnBlockEntity(pos, state);
+    }
+
+    @Override
+    protected void configureFallingBlockEntity(FallingBlockEntity entity) {
+        entity.setHurtEntities(2.0f, 40);
     }
 
     @Override
@@ -249,21 +225,11 @@ public class ClayUrn extends FallingBlock implements BlockEntityProvider {
         return CRACK_SOUND;
     }
 
-    @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> stateManager) {
-        stateManager.add(IS_CRACKED);
-    }
-
-    @Override
-    protected void configureFallingBlockEntity(FallingBlockEntity entity) {
-        entity.setHurtEntities(2.0f, 40);
-    }
-
     /**
      * Generates the block's custom model.
      * @return The block's model.
      */
-    private VoxelShape generateShape()
+    protected VoxelShape generateShape()
     {
         List<VoxelShape> shapes = new ArrayList<>();
         // Base

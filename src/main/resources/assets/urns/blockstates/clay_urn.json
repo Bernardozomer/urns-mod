@@ -1,6 +1,5 @@
 {
   "variants": {
-    "is_cracked=false": { "model": "urns:block/clay_urn" },
-    "is_cracked=true": { "model": "urns:block/clay_urn_cracked" }
+    "": { "model": "urns:block/clay_urn" }
   }
 }
