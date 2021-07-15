@@ -23,7 +23,7 @@ public class ClayUrnBlockEntity extends BlockEntity implements ImplementedInvent
 
     public ClayUrnBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CLAY_URN_BLOCK_ENTITY, pos, state);
-        items = DefaultedList.ofSize(INVENTORY_SIZE, ItemStack.EMPTY);
+        this.items = DefaultedList.ofSize(INVENTORY_SIZE, ItemStack.EMPTY);
     }
 
     @Override
@@ -32,11 +32,21 @@ public class ClayUrnBlockEntity extends BlockEntity implements ImplementedInvent
     }
 
     /**
-     * Sets the block's inventory.
+     * Sets the inventory.
      * @param items The new inventory.
      */
     public void setItems(DefaultedList<ItemStack> items) {
         this.items = items;
+    }
+
+    /**
+     * Clears the inventory and returns its previous contents.
+     * @return The previous contents of the inventory.
+     */
+    public DefaultedList<ItemStack> removeItems() {
+        DefaultedList<ItemStack> items = this.getItems();
+        this.items = DefaultedList.ofSize(INVENTORY_SIZE, ItemStack.EMPTY);
+        return items;
     }
 
     /**
