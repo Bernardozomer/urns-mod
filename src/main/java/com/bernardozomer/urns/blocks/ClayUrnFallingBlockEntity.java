@@ -1,7 +1,6 @@
 package com.bernardozomer.urns.blocks;
 
 import com.bernardozomer.urns.utils.ImplementedInventory;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.ItemEntity;
@@ -12,22 +11,22 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
-/**
- * The falling block entity that is summoned when a clay urn must fall.
- */
 public class ClayUrnFallingBlockEntity extends FallingBlockEntity implements ImplementedInventory {
 
     // The inventory the block held before falling.
-    // Will be either dropped or passed along to the new clay urn block placed on landing.
+    // Will be either dropped or passed along to the new block placed on landing.
     private final DefaultedList<ItemStack> items;
-    // The height at which the falling block was summoned.
+    // The height at which the falling block entity was summoned.
     private double originY;
 
-    public ClayUrnFallingBlockEntity(World world, double x, double y, double z, BlockState block,
-                                     DefaultedList<ItemStack> items) {
+    public ClayUrnFallingBlockEntity(World world, double x, double y, double z, BlockState block, DefaultedList<ItemStack> items) {
         super(world, x, y, z, block);
         this.items = items;
-        originY = y;
+        this.originY = y;
+    }
+
+    public double getOriginY() {
+        return originY;
     }
 
     /**
@@ -42,6 +41,11 @@ public class ClayUrnFallingBlockEntity extends FallingBlockEntity implements Imp
     }
 
     @Override
+    public DefaultedList<ItemStack> getItems() {
+        return items;
+    }
+
+    @Override
     public NbtCompound writeNbt(NbtCompound compoundTag) {
         super.writeNbt(compoundTag);
         compoundTag.putDouble("originY", originY);
@@ -52,14 +56,5 @@ public class ClayUrnFallingBlockEntity extends FallingBlockEntity implements Imp
     public void readNbt(NbtCompound compoundTag) {
         super.readNbt(compoundTag);
         originY = compoundTag.getInt("originY");
-    }
-
-    @Override
-    public DefaultedList<ItemStack> getItems() {
-        return items;
-    }
-
-    public double getOriginY() {
-        return originY;
     }
 }
