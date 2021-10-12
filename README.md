@@ -1,6 +1,6 @@
 # <img src="https://tinyimg.io/i/GFXMj7I.png" width="70"/> Urns
 
-This is a Fabric mod that adds the clay urn to the game, a fragile container that is affected by gravity.
+This is a Fabric mod that adds the clay urn to the game, a fragile container that is affected by gravity. [Also available at CurseForge](https://www.curseforge.com/minecraft/mc-mods/urns).
 
 Inspired by old-school RPGs where you had urns/vases/pots around the map which you could break to get their contents, along with Minecraft Dungeons' emerald pots.
 
