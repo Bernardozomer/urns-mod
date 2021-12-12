@@ -19,10 +19,10 @@ public class ItemStackUtils {
             return false;
         }
 
-        if (stack1.getTag() == null && stack2.getTag() != null) {
+        if (stack1.getNbt() == null && stack2.getNbt() != null) {
             return false;
         }
 
-        return stack1.getTag() == null || stack1.getTag().equals(stack2.getTag());
+        return stack1.getNbt() == null || stack1.getNbt().equals(stack2.getNbt());
     }
 }
