@@ -85,8 +85,8 @@ public class ClayUrnBlockEntity extends BlockEntity implements ImplementedInvent
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    public void writeNbt(NbtCompound tag) {
         Inventories.writeNbt(tag, items);
-        return super.writeNbt(tag);
+        super.writeNbt(tag);
     }
 }
